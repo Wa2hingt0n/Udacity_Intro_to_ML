@@ -15,7 +15,7 @@ from sklearn.model_selection import GridSearchCV
 
 
 #############################################################
-# GAUSSIAN NAIVE-bAYES
+# GAUSSIAN NAIVE-BAYES
 #############################################################
 def naive_bayes():
     from sklearn.naive_bayes import GaussianNB
@@ -24,7 +24,9 @@ def naive_bayes():
                      ('clf_NB', GaussianNB())])
 
 
-
+#############################################################
+# SUPPORT VECTOR MACHINE
+#############################################################
 def svc():
     """Initializes a support vector machine
     

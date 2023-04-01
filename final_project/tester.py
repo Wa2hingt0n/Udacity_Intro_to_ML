@@ -25,15 +25,14 @@ Recall: {:>0.{display_precision}f}\tF1: {:>0.{display_precision}f}\tF2: {:>0.{di
 RESULTS_FORMAT_STRING = "\tTotal predictions: {:4d}\tTrue positives: {:4d}\tFalse positives: {:4d}\
 \n\tFalse negatives: {:4d}\tTrue negatives: {:4d}"
 
-##########################################################################
-########################MY CODE###########################################
-##########################################################################
-def create_log_file(clf, accuracy, precision, recall, f1, f2,
+
+def log_performance(clf, accuracy, precision, recall, f1, f2,
                     total_predictions, true_positives, false_positives,
                     false_negatives, true_negatives):
-    clf_params = clf.get_params(deep=False)['steps']
-    
-    log_dict = {'Classifier': str(clf_params),
+    """ Logs model performance to 'performance_log.json'
+    """
+    log_dict = {
+                'Classifier': str(clf.get_params(deep=False)['steps']),
                 'Accuracy': accuracy,
                 'Precision': precision,
                 'Recall': recall,
@@ -44,26 +43,19 @@ def create_log_file(clf, accuracy, precision, recall, f1, f2,
                 'False Positives': false_positives,
                 'False Negatives': false_negatives,
                 'True Negatives': true_negatives,
-                }
-    
+                }    
     data = json.dumps(log_dict)
-    
     try:
         with open("performace_log.json", 'x') as log_file:
                 log_file.write(data)
     except FileExistsError:
         with open("performace_log.json", 'a') as log_file:
-            log_file.write('\n')
-            log_file.write(data)
+            log_file.write("\n{}".format(data))
 
-
-##########################################################################
-##########################################################################
-
-def test_classifier(clf, dataset, feature_list, folds = 1000):
-    data = featureFormat(dataset, feature_list, sort_keys = True)
+def test_classifier(clf, dataset, feature_list, folds=1000):
+    data = featureFormat(dataset, feature_list, sort_keys=True)
     labels, features = targetFeatureSplit(data)
-    cv = StratifiedShuffleSplit(folds, random_state = 42)
+    cv = StratifiedShuffleSplit(folds, random_state=42)
     true_negatives = 0
     false_negatives = 0
     true_positives = 0
@@ -73,12 +65,12 @@ def test_classifier(clf, dataset, feature_list, folds = 1000):
         features_test  = []
         labels_train   = []
         labels_test    = []
-        for ii in train_idx:
-            features_train.append( features[ii] )
-            labels_train.append( labels[ii] )
-        for jj in test_idx:
-            features_test.append( features[jj] )
-            labels_test.append( labels[jj] )
+        for i in train_idx:
+            features_train.append(features[i])
+            labels_train.append(labels[i])
+        for j in test_idx:
+            features_test.append(features[j])
+            labels_test.append(labels[j])
         
         ### fit the classifier using training set, and test on test set
         clf.fit(features_train, labels_train)
@@ -109,19 +101,16 @@ def test_classifier(clf, dataset, feature_list, folds = 1000):
         print(PERF_FORMAT_STRING.format(accuracy, precision, recall, f1, f2, recall_precision_ratio, display_precision = 5))
         print(RESULTS_FORMAT_STRING.format(total_predictions, true_positives, false_positives, false_negatives, true_negatives))
         print("")
-            
-            
     except:
         print("Got a divide by zero when trying out:", clf)
         print("Precision or recall may be undefined due to a lack of true positive predicitons.")
 
-    # Create a log file of performance metrics
-    create_log_file(clf, accuracy, precision, recall, f1, f2,
+    # Log performance metrics
+    log_performance(clf, accuracy, precision, recall, f1, f2,
                     total_predictions, true_positives, false_positives,
                     false_negatives, true_negatives)
     
     
-
 CLF_PICKLE_FILENAME = "my_classifier.pkl"
 DATASET_PICKLE_FILENAME = "my_dataset.pkl"
 FEATURE_LIST_FILENAME = "my_feature_list.pkl"
@@ -144,9 +133,9 @@ def load_classifier_and_data():
     return clf, dataset, feature_list
 
 def main():
-    ### load up student's classifier, dataset, and feature_list
+    # load up student's classifier, dataset, and feature_list
     clf, dataset, feature_list = load_classifier_and_data()
-    ### Run testing script
+    # Run testing script
     test_classifier(clf, dataset, feature_list)
 
 if __name__ == '__main__':

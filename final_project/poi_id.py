@@ -63,9 +63,9 @@ features_train, labels_train, features_test, labels_test = train_test_split(feat
 #     from sklearn import tree
 #     tree.plot_tree(clf)
 
-### Task 6: Dump your classifier, dataset, and features_list so anyone can
-### check your results. You do not need to change anything below, but make sure
-### that the version of poi_id.py that you submit can be run on its own and
-### generates the necessary .pkl files for validating your results.
+# Task 6: Dump your classifier, dataset, and features_list so anyone can
+# check your results. You do not need to change anything below, but make sure
+# that the version of poi_id.py that you submit can be run on its own and
+# generates the necessary .pkl files for validating your results.
 
 dump_classifier_and_data(clf, my_dataset, features_list_1)
